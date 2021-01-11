@@ -13,9 +13,9 @@ export class BusyService {
   busy(){
     this.busyRequestCount++;
     this.spinnerService.show(undefined,{
-      type: 'ball-clip-rotate',
-      bdColor: 'rgba(255,255,255,0.7)',
-      color: '#007BFF'
+      type: 'ball-spin-fade',
+      bdColor: 'rgba(0, 0, 0, 0.8)',
+      color: '#fff'
     });
   }
 

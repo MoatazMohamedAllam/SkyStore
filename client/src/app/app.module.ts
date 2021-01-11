@@ -26,7 +26,8 @@ import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
     HttpClientModule,
     NgxSpinnerModule,
     CoreModule,
-    HomeModule
+    HomeModule,
+    
     
   ],
   providers: [
