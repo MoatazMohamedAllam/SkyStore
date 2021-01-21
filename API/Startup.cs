@@ -17,7 +17,7 @@ using API.Helpers;
 using AutoMapper;
 using API.Middleware;
 using Microsoft.OpenApi.Models;
-
+using StackExchange.Redis;
 namespace API
 {
     public class Startup
@@ -34,11 +34,20 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IProductRepository,ProductRepository>();
+            services.AddScoped<IBasketRepository,BasketRepository>();
             services.AddScoped(typeof(IGenericRepostory<>),(typeof(GenericRepository<>)));
             services.AddControllers();
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddDbContext<StoreContext>(x => 
                     x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
+
+            //config Redis 
+            services.AddScoped<IConnectionMultiplexer>(c => {
+                var configuration = ConfigurationOptions.Parse(_config.GetConnectionString("Redis"),
+                true);
+                return ConnectionMultiplexer.Connect(configuration);
+            });
+            
             services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolicy",policy => 
