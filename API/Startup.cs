@@ -18,6 +18,9 @@ using AutoMapper;
 using API.Middleware;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
+using Infrastructure.Identity;
+using API.Extensions;
+
 namespace API
 {
     public class Startup
@@ -33,13 +36,20 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IProductRepository,ProductRepository>();
-            services.AddScoped<IBasketRepository,BasketRepository>();
-            services.AddScoped(typeof(IGenericRepostory<>),(typeof(GenericRepository<>)));
+            services.AddApplicationServices();
+            
             services.AddControllers();
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddDbContext<StoreContext>(x => 
                     x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
+
+            //adding Dbcontext and db for identity
+            services.AddDbContext<AppIdentityDbContext>(x =>
+                    x.UseSqlite(_config.GetConnectionString("IdentityConnection"))
+            );
+
+            //adding identity services
+            services.AddIdentityServices(_config);
 
             //config Redis 
             services.AddScoped<IConnectionMultiplexer>(c => {
@@ -76,6 +86,7 @@ namespace API
             
             app.UseStaticFiles();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseSwagger();

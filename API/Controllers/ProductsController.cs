@@ -9,6 +9,7 @@ using Core.Specifications;
 using AutoMapper;
 using API.Dtos;
 using API.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
@@ -28,6 +29,13 @@ namespace API.Controllers
            _productBrandRepo = productBrandRepo;
            _productTypeRepo = productTypeRepo;
             _mapper = mapper;
+        }
+
+        [HttpGet("testauth")]
+        [Authorize]
+        public ActionResult<string> GetSecretText()
+        {
+            return "this is secret stuff";
         }
 
         [HttpGet]
